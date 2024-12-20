@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>US Bikeshare</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+
+    <!-- This is navigation bar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">US Bikeshare</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="https://www.udacity.com/">Made with Udacity</a></li>
+                    <li><a href="https://github.com/">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- form with the dropdown menu -->
+    <div class="jumbotron" style="margin-left: 10%; margin-top: 5%;">
+        <form action="/go" method="get">
+            <label for="city">City:</label>
+            <select name="city" id="city">
+                <option value="">Select City</option>
+                {% for city_option in cities %}
+                    <option value="{{ city_option }}" {% if city == city_option %}selected{% endif %}>{{ city_option.capitalize() }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="month">Month:</label>
+            <select name="month" id="month">
+                <option value="">Select Month</option>
+                {% for month_option in months %}
+                    <option value="{{ month_option }}" {% if month == month_option %}selected{% endif %}>{{ month_option.capitalize() }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="day">Day:</label>
+            <select name="day" id="day">
+                <option value="">Select Day</option>
+                {% for day_option in days %}
+                    <option value="{{ day_option }}" {% if day == day_option %}selected{% endif %}>{{ day_option.capitalize() }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <button type="submit" class="btn btn-lg btn-success">Submit</button>
+        </form>
+
+    </div>
+
+    <!-- for each id creating div tag for the plotly image -->
+    <div class="container">
+        {% block content %}
+            <div class="page-header">
+                <h1 class="text-center">Overview of Dataset</h1>
+            </div>
+        {% endblock %}
+
+        {% for id in ids %}
+            <div id="{{id}}"></div>
+        {% endfor %}
+    </div>
+
+    <!-- generates the plotly graphs -->
+    <script type="text/javascript">
+        const graphs = {{graphJSON | safe}};
+        const ids = {{ids | safe}};
+        for(let i in graphs) {
+            Plotly.plot(ids[i], graphs[i].data, graphs[i].layout);
+        }
+    </script>
+
+</body>
+</html>
